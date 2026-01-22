@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Signature Generator - Draft Rugby</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Lucide Icons as simple SVG components
+    const Copy = ({ size = 24 }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+    );
+
+    const Check = ({ size = 24 }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    );
+
+    const HelpCircle = ({ size = 24 }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+    );
+
+    const X = ({ size = 24 }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    );
+
+    const Moon = ({ size = 24 }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    );
+
+    const Sun = ({ size = 24 }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+    );
+
+    function EmailSignatureGenerator() {
+      const [formData, setFormData] = useState({
+        name: '',
+        title: '',
+        phone: '',
+        twitter: ''
+      });
+      const [copied, setCopied] = useState(false);
+      const [showModal, setShowModal] = useState(false);
+      const [darkMode, setDarkMode] = useState(false);
+      const [fadeIn, setFadeIn] = useState(false);
+
+      useEffect(() => {
+        setTimeout(() => setFadeIn(true), 100);
+      }, []);
+
+      const handleChange = (field, value) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+      };
+
+      const clearField = (field) => {
+        setFormData(prev => ({ ...prev, [field]: '' }));
+      };
+
+      const generateSignatureHTML = () => {
+        const { name, title, phone, twitter } = formData;
+        const contactParts = [];
+        
+        if (phone) contactParts.push(phone);
+        if (twitter) contactParts.push(`<a href="https://twitter.com/${twitter.replace('@', '')}" style="color: #8b7355; text-decoration: none;">${twitter.startsWith('@') ? twitter : '@' + twitter}</a>`);
+        
+        const contactLine = contactParts.join(' • ');
+
+        const logoUrl = 'https://i.imgur.com/RzrK92B.png';
+
+        return `<table cellpadding="0" cellspacing="0" border="0" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.5; color: #2c2c2c;">
+  <tr>
+    <td style="padding-bottom: 12px;">
+      <a href="https://draftrugby.com" style="display: inline-block;">
+        <img src="${logoUrl}" alt="Draft Rugby" style="display: block; border: 0;" width="120" height="40" />
+      </a>
+    </td>
+  </tr>
+  ${name ? `<tr><td style="font-weight: 600; font-size: 16px; color: #2c2c2c; padding-bottom: 2px;">${name}</td></tr>` : ''}
+  ${title ? `<tr><td style="color: #6b6b6b; padding-bottom: 2px;">${title}</td></tr>` : ''}
+  <tr><td style="color: #6b6b6b; padding-bottom: 2px;">Draft Rugby</td></tr>
+  ${contactLine ? `<tr><td style="color: #6b6b6b; padding-top: 4px;">${contactLine}</td></tr>` : ''}
+</table>`;
+      };
+
+      const copySignature = async () => {
+        const html = generateSignatureHTML();
+        
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              'text/html': new Blob([html], { type: 'text/html' }),
+              'text/plain': new Blob([html], { type: 'text/plain' })
+            })
+          ]);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = html;
+          document.body.appendChild(tempDiv);
+          
+          const range = document.createRange();
+          range.selectNodeContents(tempDiv);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          
+          document.execCommand('copy');
+          document.body.removeChild(tempDiv);
+          
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        }
+      };
+
+      return (
+        <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50'}`}>
+          <div className={`max-w-5xl mx-auto px-6 py-12 transition-opacity duration-700 ${fadeIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            
+            <div className="text-center mb-12">
+              <h1 className={`text-4xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                Draft Rugby Email Signature Generator
+              </h1>
+              <p className={`text-lg ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                Create a professional email signature in seconds
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              
+              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl shadow-lg p-8`}>
+                <h2 className={`text-xl font-semibold mb-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                  Your Information
+                </h2>
+                
+                <div className="space-y-4">
+                  {['name', 'title', 'phone', 'twitter'].map(field => (
+                    <div key={field} className="relative">
+                      <label className={`block text-sm font-medium mb-2 capitalize ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                        {field === 'twitter' ? 'Twitter/X' : field}
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={formData[field]}
+                          onChange={(e) => handleChange(field, e.target.value)}
+                          placeholder={field === 'twitter' ? '@username' : `Enter your ${field}`}
+                          className={`w-full px-4 py-3 pr-10 rounded-lg border-2 transition-all focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                            darkMode 
+                              ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-500' 
+                              : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400'
+                          }`}
+                        />
+                        {formData[field] && (
+                          <button
+                            onClick={() => clearField(field)}
+                            className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors ${
+                              darkMode ? 'hover:bg-gray-600 text-gray-400' : 'hover:bg-gray-200 text-gray-500'
+                            }`}
+                          >
+                            <X size={16} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 flex gap-3">
+                  <button
+                    onClick={copySignature}
+                    className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+                  >
+                    {copied ? (
+                      <>
+                        <Check size={18} />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={18} />
+                        Copy Signature
+                      </>
+                    )}
+                  </button>
+                  
+                  <button
+                    onClick={() => setShowModal(true)}
+                    className={`p-3 rounded-lg transition-colors ${
+                      darkMode 
+                        ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                    }`}
+                    title="How to import?"
+                  >
+                    <HelpCircle size={20} />
+                  </button>
+                </div>
+              </div>
+
+              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl shadow-lg p-8`}>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    Preview
+                  </h2>
+                  <button
+                    onClick={() => setDarkMode(!darkMode)}
+                    className={`p-2 rounded-lg transition-colors ${
+                      darkMode 
+                        ? 'bg-gray-700 hover:bg-gray-600 text-yellow-400' 
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                    }`}
+                    title="Toggle dark mode"
+                  >
+                    {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+                  </button>
+                </div>
+                
+                <div className={`min-h-[300px] p-6 rounded-lg border-2 border-dashed ${
+                  darkMode ? 'border-gray-600 bg-gray-900' : 'border-gray-200 bg-gray-50'
+                }`}>
+                  <div dangerouslySetInnerHTML={{ __html: generateSignatureHTML() }} />
+                </div>
+                
+                <p className={`text-sm mt-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Your signature updates as you type
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {showModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+              <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-8`}>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    How to Import Your Signature
+                  </h3>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className={`p-2 rounded-lg transition-colors ${
+                      darkMode ? 'hover:bg-gray-700 text-gray-400' : 'hover:bg-gray-100 text-gray-500'
+                    }`}
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <h4 className={`font-semibold text-lg mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      Gmail
+                    </h4>
+                    <ol className={`list-decimal list-inside space-y-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <li>Click "Copy Signature" button above</li>
+                      <li>Open Gmail Settings (gear icon → See all settings)</li>
+                      <li>Scroll to "Signature" section</li>
+                      <li>Click "+ Create new" or select existing signature</li>
+                      <li>Paste your signature (Cmd/Ctrl + V)</li>
+                      <li>Scroll down and click "Save Changes"</li>
+                    </ol>
+                  </div>
+
+                  <div>
+                    <h4 className={`font-semibold text-lg mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      macOS Mail
+                    </h4>
+                    <ol className={`list-decimal list-inside space-y-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <li>Click "Copy Signature" button above</li>
+                      <li>Open Mail → Settings → Signatures</li>
+                      <li>Select your email account</li>
+                      <li>Click "+" to create new signature</li>
+                      <li>Name your signature</li>
+                      <li>Paste in the signature field (Cmd + V)</li>
+                    </ol>
+                  </div>
+
+                  <div>
+                    <h4 className={`font-semibold text-lg mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                      iOS Mail
+                    </h4>
+                    <ol className={`list-decimal list-inside space-y-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <li>Click "Copy Signature" button above</li>
+                      <li>Go to Settings → Mail → Signature</li>
+                      <li>Select "All Accounts" or specific account</li>
+                      <li>Clear existing signature and paste (long press → Paste)</li>
+                      <li>Note: Images may not appear on iOS; consider a text-only version</li>
+                    </ol>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="w-full mt-6 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-medium py-3 px-6 rounded-lg transition-all"
+                >
+                  Got it!
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<EmailSignatureGenerator />, document.getElementById('root'));
+  </script>
+</body>
+</html>
