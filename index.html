@@ -179,7 +179,7 @@
   </tr>
   ${name ? `<tr><td style="font-weight: 600; font-size: 16px; color: ${textColor}; padding-bottom: 2px;">${name}</td></tr>` : ''}
   ${title ? `<tr><td style="color: ${mutedColor}; padding-bottom: 2px;">${title}</td></tr>` : ''}
-   <tr><td style="color: ${mutedColor}; padding-bottom: 2px; font-family: 'Futura PT', 'Futura', sans-serif; font-weight: 800;">DRAFT RUGBY</td></tr>
+   <tr><td style="color: ${mutedColor}; padding-bottom: 2px; font-family: 'Futura PT', 'Futura', sans-serif; font-weight: 900;">DRAFT RUGBY</td></tr>
   ${contactLine ? `<tr><td style="color: ${mutedColor}; padding-top: 4px;">${contactLine}</td></tr>` : ''}
   ${socialIconsHTML}
 </table>`;
@@ -435,7 +435,8 @@
                 <div className="mt-6 flex gap-3">
                   <button
                     onClick={copySignature}
-                    className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+                    className="flex-1 text-white font-medium py-3 px-6 rounded-lg transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+                    style={{ background: 'linear-gradient(135deg,#13F1FC,#0470DC)' }}
                   >
                     {copied ? (
                       <>
