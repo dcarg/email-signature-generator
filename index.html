@@ -97,21 +97,25 @@
         
         const contactLine = contactParts.join(' • ');
 
-        // const logoUrl = 'https://i.imgur.com/RzrK92B.png';
-        const logoUrl = './images/logo.svg';
+        // Logo paths for light and dark mode
+        const logoUrl = darkMode ? './images/logo-white.svg' : './images/logo.svg';
+        
+        // Text colors for light and dark mode
+        const textColor = darkMode ? '#ffffff' : '#2c2c2c';
+        const mutedColor = darkMode ? '#9ca3af' : '#6b6b6b';
 
-        return `<table cellpadding="0" cellspacing="0" border="0" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.5; color: #2c2c2c;">
+        return `<table cellpadding="0" cellspacing="0" border="0" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.5; color: ${textColor};">
   <tr>
     <td style="padding-bottom: 12px;">
       <a href="https://draftrugby.com" style="display: inline-block;">
-        <img src="${logoUrl}" alt="Draft Rugby" style="display: block; border: 0;" width="120" height="40" />
+        <img src="${logoUrl}" alt="Draft Rugby" style="display: block; border: 0;" width="40" height="40" />
       </a>
     </td>
   </tr>
-  ${name ? `<tr><td style="font-weight: 600; font-size: 16px; color: #2c2c2c; padding-bottom: 2px;">${name}</td></tr>` : ''}
-  ${title ? `<tr><td style="color: #6b6b6b; padding-bottom: 2px;">${title}</td></tr>` : ''}
-  <tr><td style="color: #6b6b6b; padding-bottom: 2px;">Draft Rugby</td></tr>
-  ${contactLine ? `<tr><td style="color: #6b6b6b; padding-top: 4px;">${contactLine}</td></tr>` : ''}
+  ${name ? `<tr><td style="font-weight: 600; font-size: 16px; color: ${textColor}; padding-bottom: 2px;">${name}</td></tr>` : ''}
+  ${title ? `<tr><td style="color: ${mutedColor}; padding-bottom: 2px;">${title}</td></tr>` : ''}
+  <tr><td style="color: ${mutedColor}; padding-bottom: 2px;">Draft Rugby</td></tr>
+  ${contactLine ? `<tr><td style="color: ${mutedColor}; padding-top: 4px;">${contactLine}</td></tr>` : ''}
 </table>`;
       };
 
